@@ -1,3 +1,57 @@
+📖 Project Overview
+This Habit Tracker is a full‑stack web application designed to help users build consistency in their daily routines. It combines secure authentication, structured habit logging, and motivational features into one seamless experience.
+
+🔐 Authentication (Firebase Auth)
+Implemented Firebase Authentication for secure sign‑up and login.
+
+Each user has a personalized account, ensuring their habits and progress are private and protected.
+
+Provides a reliable entry point for tracking habits across sessions and devices.
+
+📂 Data Storage (Firestore)
+Used Cloud Firestore to store:
+
+Daily habit logs (whether a habit was completed on a given day).
+
+User‑defined habits (custom list of habits per account).
+
+Firestore’s real‑time updates ensure the dashboard reflects changes instantly.
+
+Enables persistent, cloud‑based tracking that scales with users.
+
+🌟 Motivation (ZenQuotes API)
+Integrated ZenQuotes API to display a daily motivational quote.
+
+Adds inspiration alongside progress tracking, encouraging users to stay consistent.
+
+Keeps the experience engaging and uplifting, not just functional.
+
+🎯 Use Case
+Problem: People struggle to build and maintain habits due to lack of structure, accountability, and motivation.
+
+Solution: This app provides:
+
+A personalized dashboard with secure login.
+
+Daily habit tracking stored in the cloud.
+
+Visual progress indicators (monthly completion percentage, habit grid).
+
+Motivational quotes to inspire consistency.
+
+🚀 Why This Project Matters
+Accountability: Secure login ties progress to each user.
+
+Clarity: Visual dashboards make progress easy to understand.
+
+Motivation: Daily quotes encourage persistence.
+
+Simplicity: Easy to add habits, check them off, and see results.
+
+Scalability: Built on Firebase + Firestore, ensuring reliability for many users.
+
+Modern UX: Responsive design and dark mode support for a smooth experience across devices.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
