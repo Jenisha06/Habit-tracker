@@ -40,5 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# firebase api
+# firebase api and gemini api key
 .env.local

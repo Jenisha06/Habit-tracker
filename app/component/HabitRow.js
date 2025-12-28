@@ -1,6 +1,7 @@
 import HabitCell from "./HabitCell";
 import { toggleHabitLog } from "@/lib/firestore";
 import { useAuth } from "../context/AuthContext";
+import { calculateStreak } from "@/lib/streak";
 
 export default function HabitRow({
   habit,
@@ -11,20 +12,21 @@ export default function HabitRow({
 }) {
   const { user } = useAuth();
 
-  async function handleToggle(dateKey, currentValue) {
+    const streak = calculateStreak(dailyLog, habit.id, todayDate);
+
+  async function handleToggle(dateKey) {
     if (!user) return;
 
-    const newValue = !currentValue;
+    if (dateKey > todayDate) return;
 
-    // 1️⃣ Save to Firestore
-    await toggleHabitLog(
+    // 🔹 Firestore decides the new value
+    const newValue = await toggleHabitLog(
       user.uid,
       dateKey,
-      habit.id,
-      newValue
+      habit.id
     );
 
-    // 2️⃣ Instantly update UI
+    // 🔹 Instant UI update
     setDailyLog((prev) => ({
       ...prev,
       [dateKey]: {
@@ -35,7 +37,7 @@ export default function HabitRow({
   }
 
   return (
-    <div className="flex gap-2 items-center ml-11">
+    <div className="flex gap-2 items-center ml-3 mb-3 ">
       {days.map((dateKey) => {
         const checked = dailyLog?.[dateKey]?.[habit.id] || false;
         const isToday = dateKey === todayDate;
@@ -45,7 +47,7 @@ export default function HabitRow({
             key={dateKey}
             checked={checked}
             isToday={isToday}
-            onClick={() => handleToggle(dateKey, checked)}
+            onClick={() => handleToggle(dateKey)}
           />
         );
       })}

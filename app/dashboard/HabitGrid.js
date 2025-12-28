@@ -3,9 +3,18 @@ import { useEffect, useState } from "react";
 import HabitRow from "../component/HabitRow";
 import { getHabitLog } from "@/lib/firestore";
 import { useAuth } from "../context/AuthContext";
+import { calculateMonthlyCompletion } from "@/lib/stats";
 
-export default function HabitGrid({ habits = [], month, year }) {
+export default function HabitGrid({
+  habits = [],
+  month,
+  year,
+  onCompletionChange,
+}) {
   const { user } = useAuth();
+
+  const [dailyLog, setDailyLog] = useState({});
+  const [completionPercent, setCompletionPercent] = useState(0);
 
   const today = new Date();
   const todayDate = today.getDate();
@@ -15,38 +24,61 @@ export default function HabitGrid({ habits = [], month, year }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const isCurrentMonth = month === todayMonth && year === todayYear;
 
-  // 🔹 DAILY LOG STATE
-  const [dailyLog, setDailyLog] = useState({});
-
-  // 🔹 CREATE YYYY-MM-DD KEYS
+  // 🔹 YYYY-MM-DD KEYS
   const days = Array.from({ length: daysInMonth }, (_, i) => {
     const day = i + 1;
-    return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(
+      2,
+      "0"
+    )}`;
   });
 
-  // 🔹 LOAD TODAY'S LOG FROM FIRESTORE
+  const todayKey = `${todayYear}-${String(todayMonth + 1).padStart(
+    2,
+    "0"
+  )}-${String(todayDate).padStart(2, "0")}`;
+
+  // 🔹 LOAD MONTH LOGS
   useEffect(() => {
     if (!user) return;
 
-    const todayKey = `${todayYear}-${String(todayMonth + 1).padStart(2, "0")}-${String(todayDate).padStart(2, "0")}`;
+    async function loadMonthLogs() {
+      const logs = {};
 
-    getHabitLog(user.uid, todayKey).then((data) => {
-      setDailyLog((prev) => ({
-        ...prev,
-        [todayKey]: data,
-      }));
+      for (const dateKey of days) {
+        const data = await getHabitLog(user.uid, dateKey);
+        if (Object.keys(data).length > 0) {
+          logs[dateKey] = data;
+        }
+      }
+
+      setDailyLog(logs);
+    }
+
+    loadMonthLogs();
+  }, [user, month, year]);
+
+  // 🔹 CALCULATE COMPLETION %
+  useEffect(() => {
+    const percent = calculateMonthlyCompletion({
+      habits,
+      dailyLog,
+      month,
+      year,
     });
-  }, [user]);
+
+    setCompletionPercent(percent);
+    onCompletionChange?.(percent);
+  }, [habits, dailyLog, month, year, onCompletionChange]);
 
   return (
-    <div className="overflow-x-auto mt-85">
+    <div className="overflow-x-auto ">
       {/* DATE HEADER */}
-      <div className="grid grid-cols-[40px_repeat(34,1fr)] mb-2 text-center text-sm ">
+      <div className="grid grid-cols-[10px_repeat(33,1fr)] mb-2 text-center text-sm">
         <div />
         {days.map((dateKey, i) => {
           const dayNumber = i + 1;
-          const isToday =
-            isCurrentMonth && dayNumber === todayDate;
+          const isToday = isCurrentMonth && dayNumber === todayDate;
 
           return (
             <div
@@ -62,7 +94,7 @@ export default function HabitGrid({ habits = [], month, year }) {
       </div>
 
       {/* HABIT ROWS */}
-      <div className="space-y-2">
+      <div className="space-y-2 ">
         {habits.map((habit) => (
           <HabitRow
             key={habit.id}
@@ -70,7 +102,7 @@ export default function HabitGrid({ habits = [], month, year }) {
             days={days}
             dailyLog={dailyLog}
             setDailyLog={setDailyLog}
-            todayDate={`${todayYear}-${String(todayMonth + 1).padStart(2, "0")}-${String(todayDate).padStart(2, "0")}`}
+            todayDate={todayKey}
           />
         ))}
       </div>
