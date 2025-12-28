@@ -75,7 +75,7 @@ setHabits(data || []);
   };
 
   return (
-    <div className="grid grid-cols-[260px_1fr] h-screen">
+    <div className="grid grid-cols-[250px_1fr]  h-screen">
       <Sidebar
         habits={habits}
         selectedHabitId={selectedHabitId}
@@ -84,7 +84,7 @@ setHabits(data || []);
         year={year}
         setMonth={setMonth}
         setYear={setYear}
-        onAddHabit={handleAddHabit} // 🔑 wired
+        onAddHabit={handleAddHabit} 
       />
 <HabitGrid
   habits={habits}

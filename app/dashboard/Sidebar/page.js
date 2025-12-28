@@ -8,9 +8,9 @@ export default function Sidebar({
   year,
   setMonth,
   setYear,
-  onAddHabit, // 🔑 comes from Dashboard later
+  onAddHabit, 
 }) {
-  // ---------- TODAY LOGIC ----------
+ 
   const today = new Date();
 
   const todayDate = today.getDate();
@@ -31,19 +31,19 @@ export default function Sidebar({
   const todayDayName = dayNames[today.getDay()];
   const todayMonthName = monthNames[todayMonth];
 
-  // 🔑 Firestore daily key (used later)
+
   const todayKey = `${todayYear}-${String(todayMonth + 1).padStart(2,"0")}-${String(todayDate).padStart(2,"0")}`;
 
   const months = monthNames;
 
   return (
-    <aside className="h-full border-r bg-white p-4 flex flex-col">
+    <div className="h-full border-r bg-white p-4 flex flex-col">
       
       <div className="bg-[#F6E27F] pt-3 rounded-[50px] mb-6 text-center">
         <h2 className="text-xl font-semibold mb-6">Habit Tracker</h2>
       </div>
 
-      {/* Year + Month */}
+     
       <div className="flex flex-col mb-4 bg-[#D6CDEA] rounded-[30px]">
         <div className="flex items-center justify-evenly p-2 text-[#682860]">
           <h3 className="font-bold mr-5">Year</h3>
@@ -100,7 +100,7 @@ export default function Sidebar({
             onClick={() => onSelectHabit(habit.id)}
             className={`w-full text-left rounded-md px-3 py-2 transition ${
               selectedHabitId === habit.id
-                ? "bg-blue-100 text-blue-700"
+                ? "bg-[#D6CDEA] text-[#682860]"
                 : "hover:bg-gray-100"
             }`}
           >
@@ -108,6 +108,6 @@ export default function Sidebar({
           </button>
         ))}
       </div>
-    </aside>
+    </div>
   );
 }
